@@ -21,7 +21,10 @@ func init() {
 	ignoreList = []string{
 		"bullshit-meter",
 		"vendor",
+		"swagger",
+		"files",
 	}
+
 }
 
 func main() {
@@ -92,6 +95,7 @@ func readDir(dir string) {
 				pendingWork++
 			}
 		} else if !strings.HasPrefix(val.Name(), ".") && val.IsDir() {
+
 			readDir(dir + "/" + val.Name())
 		}
 	}
@@ -109,7 +113,8 @@ func getTODO(dir string, filedata os.FileInfo) bool {
 	defer f.Close()
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		if bullshitScout.MatchString(string(scanner.Bytes())) {
+
+		if bullshitScout.MatchString(string(scanner.Text())) {
 			return true
 		}
 	}

@@ -15,6 +15,14 @@ var bullshitScout *regexp.Regexp
 var fileCount float32
 var pendingWork float32
 var verbose bool
+var ignoreList []string
+
+func init() {
+	ignoreList = []string{
+		"bullshit-meter",
+		"vendor",
+	}
+}
 
 func main() {
 	//flag
@@ -58,6 +66,15 @@ func main() {
 	}
 }
 
+func isIgnored(a string) bool {
+	for _, b := range ignoreList {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
 func readDir(dir string) {
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
@@ -65,7 +82,8 @@ func readDir(dir string) {
 	}
 
 	for _, val := range files {
-		if val.Name() == "bullshit-meter" {
+
+		if isIgnored(val.Name()) {
 			continue
 		}
 		if !strings.HasPrefix(val.Name(), ".") && !val.IsDir() {

@@ -17,7 +17,7 @@ var pendingWork float32
 
 func main() {
 	//flag
-	directoryFlag := flag.String("dir", "", "directory to be checked")
+	directoryFlag := flag.String("dir", "", "directory to be checked, if its empty, it will check current directory")
 	flag.Parse()
 
 	//regexp

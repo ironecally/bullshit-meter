@@ -14,11 +14,17 @@ import (
 var bullshitScout *regexp.Regexp
 var fileCount float32
 var pendingWork float32
+var verbose bool
 
 func main() {
 	//flag
 	directoryFlag := flag.String("dir", "", "directory to be checked, if its empty, it will check current directory")
+	verbosePtr := flag.Bool("v", false, "show verbose")
 	flag.Parse()
+
+	if verbosePtr != nil {
+		verbose = *verbosePtr
+	}
 
 	//regexp
 	r, _ := regexp.Compile(`(\/\/\s*TODO)|(\/\/\s*FIXME)`)
@@ -38,8 +44,10 @@ func main() {
 			dir = dir + "/" + *directoryFlag
 		}
 	}
+	if verbose {
+		log.Println("scanning:", dir)
+	}
 
-	fmt.Println("scanning:", dir)
 	readDir(dir)
 
 	if pendingWork > 0.0 {
@@ -72,7 +80,10 @@ func readDir(dir string) {
 }
 
 func getTODO(dir string, filedata os.FileInfo) bool {
-	fmt.Printf("checking file:%s/%s\n", dir, filedata.Name())
+	if verbose {
+		fmt.Printf("checking file:%s/%s\n", dir, filedata.Name())
+	}
+
 	f, err := os.Open(dir + "/" + filedata.Name())
 	if err != nil {
 		log.Println("fail to read file", filedata.Name(), err)
